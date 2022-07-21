@@ -52,7 +52,7 @@ image: generated_files
 .PHONY: generate_crds
 generate_crds:
 	@echo "+ Generating crds"
-	@go install sigs.k8s.io/controller-tools/cmd/controller-gen
+	@go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.6.0
 	@controller-gen "crd:trivialVersions=false,crdVersions=v1" rbac:roleName=manager-role paths="./pkg/apis/..." output:crd:artifacts:config=tmp/crds-v1
 	@cat tmp/crds-v1/*.yaml > manifests/production/metacontroller-crds-v1.yaml
 
