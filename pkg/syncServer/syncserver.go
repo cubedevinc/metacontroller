@@ -67,10 +67,10 @@ func (r *SyncServer) Start() {
 
 		if r.configuration.ApiTriggerSync {
 			logging.Logger.Info("Api trigger_sync enabled")
-
 			go r.signalListener()
-			r.gin.GET("/trigger_sync", r.triggerSync)
 		}
+
+		r.gin.GET("/trigger_sync", r.triggerSync)
 
 		if err := r.gin.Run(":" + strconv.Itoa(port)); err != nil {
 			logging.Logger.Error(err, "cannot start gin server")
