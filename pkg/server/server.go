@@ -20,7 +20,11 @@ import (
 	"context"
 	"fmt"
 	"metacontroller/pkg/logging"
+	"metacontroller/pkg/syncServer"
+	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"k8s.io/client-go/discovery"
 
@@ -122,6 +126,16 @@ func New(configuration options.Configuration) (controllerruntime.Manager, error)
 	// We need to call Start after initializing the controllers
 	// to make sure all the needed informers are already created
 	controllerContext.Start()
+
+	// Trigger http server
+	if configuration.TriggerSync {
+		port, syncErr := strconv.Atoi(configuration.TriggerSyncPort)
+		if syncErr != nil {
+			return nil, errors.Wrap(err, "failed to convert TriggerSyncPort to int")
+		}
+		syncSrv := syncServer.New(compositeReconciler, decoratorReconciler, port)
+		syncSrv.Start()
+	}
 
 	return mgr, nil
 }
